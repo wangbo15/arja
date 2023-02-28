@@ -7,6 +7,14 @@ import java.util.HashSet;
 import java.util.Set;
 
 public class DataSet {
+
+	public static boolean isDefects4J224Project(String subject) {
+		return subject.equalsIgnoreCase("math")
+				|| subject.equalsIgnoreCase("lang")
+				|| subject.equalsIgnoreCase("time")
+				|| subject.equalsIgnoreCase("chart");
+	}
+
 	public static HashMap<String, Object> getDefects4JProgram(String defects4jRoot, String proj, int id)
 			throws IOException {
 		HashMap<String, Object> info = new HashMap<String, Object>();

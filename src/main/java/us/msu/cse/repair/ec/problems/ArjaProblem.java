@@ -214,7 +214,6 @@ public class ArjaProblem extends AbstractRepairProblem {
 					try {
 						IO.savePatch(modifiedJavaSources, srcJavaDir, this.patchOutputRoot, globalID);
 					} catch (InterruptedException e) {
-						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
 				}
@@ -244,7 +243,7 @@ public class ArjaProblem extends AbstractRepairProblem {
 
 		boolean status = testExecutor.runTests();
 
-		if (status && percentage != null && percentage < 1) {
+		if (status) {
 			testExecutor = getTestExecutor(compiledClasses, positiveTests);
 			status = testExecutor.runTests();
 		}

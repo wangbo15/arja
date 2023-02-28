@@ -58,11 +58,7 @@ import us.msu.cse.repair.core.parser.ingredient.IngredientScreenerFactory;
 import us.msu.cse.repair.core.testexecutors.ExternalTestExecutor;
 import us.msu.cse.repair.core.testexecutors.ITestExecutor;
 import us.msu.cse.repair.core.testexecutors.InternalTestExecutor;
-import us.msu.cse.repair.core.util.ClassFinder;
-import us.msu.cse.repair.core.util.CustomURLClassLoader;
-import us.msu.cse.repair.core.util.Helper;
-import us.msu.cse.repair.core.util.IO;
-import us.msu.cse.repair.core.util.Patch;
+import us.msu.cse.repair.core.util.*;
 
 public abstract class AbstractRepairProblem extends Problem {
 	/**
@@ -182,8 +178,6 @@ public abstract class AbstractRepairProblem extends Problem {
 		}
 
 
-		String id = Helper.getRandomID();
-		
 		thr = (Double) parameters.get("thr");
 		if (thr == null)
 			thr = 0.1;
@@ -205,10 +199,10 @@ public abstract class AbstractRepairProblem extends Problem {
 			binWorkingRoot = System.getProperty("java.io.tmpdir") + System.getProperty("file.separator") + "working_" + id;
 		
 		patchOutputRoot = (String) parameters.get("patchOutputRoot");
-		if (patchOutputRoot == null)
-			patchOutputRoot = "patches_" + id;
-		else
-			patchOutputRoot = patchOutputRoot + "_" + id;
+		if (patchOutputRoot == null) {
+			String randomID = Helper.getRandomID();
+			patchOutputRoot = "patches_" + randomID;
+		}
 		
 		orgPosTestsInfoPath = (String) parameters.get("orgPosTestsInfoPath");
 		if (orgPosTestsInfoPath == null)
@@ -238,7 +232,7 @@ public abstract class AbstractRepairProblem extends Problem {
 		
 		diffFormat = (Boolean) parameters.get("diffFormat");
 		if (diffFormat == null)
-			diffFormat = false;
+			diffFormat = true;
 
 		testFiltered = (Boolean) parameters.get("testFiltered");
 		if (testFiltered == null)
@@ -674,7 +668,7 @@ public abstract class AbstractRepairProblem extends Problem {
 	}
 
 	protected Set<String> getSamplePositiveTests() {
-		if ((percentage == null || percentage == 1) && positiveTests.size() <= 20) {
+		if ((percentage == null || percentage == 1) && DataSet.isDefects4J224Project(subject)) {
             return positiveTests;
         } else {
             Double realPercentage = percentage != null ? percentage : (Double.valueOf(20) / positiveTests.size()) ;

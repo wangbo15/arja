@@ -13,13 +13,10 @@ public class RedirectBranchManipulation extends AbstractManipulation {
 
 	public RedirectBranchManipulation(ModificationPoint mp, Statement ingredStatement, ASTRewrite rewriter) {
 		super(mp, ingredStatement, rewriter);
-		// TODO Auto-generated constructor stub
-
 	}
 
 	@Override
 	public boolean manipulate() {
-		// TODO Auto-generated method stub
 		Statement statement = mp.getStatement();
 		if (!(statement instanceof IfStatement))
 			return false;

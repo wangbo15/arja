@@ -18,9 +18,9 @@ public class ArjaMain {
 	public static void main(String args[]) throws Exception {
 		String bugID = args[0];
 		assert bugID != null;
-		System.out.println("Fixing " + bugID);
+		System.out.println("Fixing " + bugID + " @ " + Main.EXECUTE_TIME_STR);
 		ProjectConfig config = ProjectConfig.getInstance(bugID);
-		args = new String[13];
+		args = new String[11];
 		args[0] = "Arja";
 		args[1] = "-DsrcJavaDir";
 		args[2] = config.getSrcJavaDir();
@@ -32,10 +32,10 @@ public class ArjaMain {
 		args[8] = config.getDependencies();
 
 		args[9] = "-DpatchOutputRoot";
-		args[10] = "patches_" + bugID;
+		args[10] = "patches_" + bugID + "_" + Main.EXECUTE_TIME_STR;
 
-		args[11] = "-Dthr";
-		args[12] = "0.08";
+//		args[11] = "-Dthr";
+//		args[12] = "0.08";
 
 		HashMap<String, String> parameterStrs = Interpreter.getParameterStrings(args);
 		HashMap<String, Object> parameters = Interpreter.getBasicParameterSetting(parameterStrs);
