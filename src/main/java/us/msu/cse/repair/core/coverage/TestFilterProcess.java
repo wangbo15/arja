@@ -12,21 +12,23 @@ import us.msu.cse.repair.core.util.ProcessWithTimeout;
 import us.msu.cse.repair.core.util.StreamReaderThread;
 
 public class TestFilterProcess {
-	Set<LCNode> faultyLines;
-	String faultyLinesInfoPath;
+	private Set<LCNode> faultyLines;
+	private String faultyLinesInfoPath;
 
-	Set<String> orgPositiveTests;
-	String orgPosTestsInfoPath;
+	private Set<String> orgPositiveTests;
+	private String orgPosTestsInfoPath;
 
-	Set<String> orgNegativeTest;
+	private Set<String> orgNegativeTest;
 
-	String binJavaDir;
-	String binTestDir;
-	Set<String> dependences;
+	private String binJavaDir;
+	private String binTestDir;
+	private Set<String> dependences;
 
-	String externalProjRoot;
+	private String externalProjRoot;
 
-	String jvmPath;
+	private String jvmPath;
+
+	private boolean seperateExecution = false;
 
 	/**
 	 * @param orgNegativeTest This param is added by wb, to enable read FL
@@ -52,11 +54,15 @@ public class TestFilterProcess {
 		this.jvmPath = jvmPath;
 	}
 
+	public void setSeperateExecution(boolean seperateExecution) {
+		this.seperateExecution = seperateExecution;
+	}
+
 	public Set<String> getFilteredPositiveTests() throws IOException, InterruptedException {
 		List<String> params = new ArrayList<String>();
 		params.add(jvmPath);
-		params.add("-XX:PermSize=256M");
-		params.add("-XX:MaxPermSize=2G");
+		params.add("-XX:PermSize=512M");
+		params.add("-XX:MaxPermSize=8G");
 
 		params.add("-cp");
 
@@ -103,13 +109,24 @@ public class TestFilterProcess {
 			params.add(opts);
 		}
 
-//		// add for read FL
-//		if(binJavaDir.contains("closure")) {
-//			String failTest = "";
-//			for (String test : orgNegativeTest)
-//				failTest += (test + File.pathSeparator);
-//			params.add(failTest);
-//		}
+		Set<String> filteredPositiveTests = new HashSet<String>();
+
+		if (seperateExecution) {
+			// filter 500 tests once
+			for(int i = 0; i < orgPositiveTests.size(); i = i + 500){
+				params.add(String.valueOf(i));
+				createTestFilterChildProcess(params, filteredPositiveTests);
+				params.remove(params.size()-1);
+			}
+		} else {
+			createTestFilterChildProcess(params, filteredPositiveTests);
+		}
+
+		return filteredPositiveTests;
+	}
+
+	private void createTestFilterChildProcess(List<String> params, Set<String> filteredPositiveTests)
+			throws IOException, InterruptedException {
 
 		System.out.println("------------------------------");
 		for (String s : params) {
@@ -135,13 +152,14 @@ public class TestFilterProcess {
 		streamReaderThread.join();
 		List<String> output = streamReaderThread.getOutput();
 
-		Set<String> filteredPositiveTests = new HashSet<String>();
 		for (String str : output) {
-			if (str.startsWith("FilteredTest"))
+			if (str.startsWith("FilteredTest")) {
 				filteredPositiveTests.add(str.split(":")[1].trim());
-		}
+			} else if (str.startsWith("Exception: java.lang.OutOfMemoryError")) {
+				throw new Error("TestFilter failed for OutOfMemoryError!!!");
+			}
+		} // end for
 
-		return filteredPositiveTests;
-	}
+	} // end createTestFilterChildProcess
 
 }

@@ -87,7 +87,7 @@ public class ReaderLocalizer implements IFaultLocalizer{
             assert !negativeTestMethods.isEmpty();
             positiveTestMethods.removeAll(negativeTestMethods);
 
-            if(subject.equalsIgnoreCase("closure")) {
+            /*if(subject.equalsIgnoreCase("closure")) {
                 // TODO: only read from d4j base for closure
                 String lower = subject.toLowerCase();
                 String headCapitalized = Character.toUpperCase(lower.charAt(0)) + lower.substring(1);
@@ -102,7 +102,7 @@ public class ReaderLocalizer implements IFaultLocalizer{
                     }
                 }
                 positiveTestMethods.removeAll(tobeRemoved);
-            }
+            }*/
 
         } catch (IOException e) {
             throw new RuntimeException(e);
