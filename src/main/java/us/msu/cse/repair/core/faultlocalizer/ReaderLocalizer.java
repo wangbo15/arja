@@ -26,7 +26,7 @@ public class ReaderLocalizer implements IFaultLocalizer{
         this.subject = subject;
         this.id = Integer.toString(id);
         this.isManual = isManual;
-        String str = isManual ? "manual" : "ochiai";
+        String str = isManual ? "manual perfect" : "ochiai";
         System.out.println("Loading " + str + " FL data...");
         File suspiciousFile = new File("location/" + str + "/" + subject + "/" + id + ".txt");
         assert suspiciousFile.exists(): "FILE DOES NOT EXIST: " + suspiciousFile.getAbsolutePath();
