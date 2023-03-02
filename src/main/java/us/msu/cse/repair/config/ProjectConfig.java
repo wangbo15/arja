@@ -54,6 +54,7 @@ public class ProjectConfig {
         assert binJavaDir != null;
         assert binTestDir != null;
 
+        System.out.println("Setup ProjectConfig...");
         this.bugName = bugName;
         String[] arr = bugName.split("_");
         this.subject = arr[0];
@@ -66,18 +67,25 @@ public class ProjectConfig {
         this.binJavaDir = binJavaDir;
         this.binTestDir = binTestDir;
 
-        if(System.getProperty("os.name").toLowerCase().contains("linux")) {
-            allTestFile = new File(this.rootDir + "/all-tests.txt");
-        } else {
+        this.gitClean();
+        this.d4jCompile();
+        this.d4jTest();
+
+        allTestFile = new File(this.rootDir + "/all-tests.txt");
+        if (!allTestFile.exists()) {
             allTestFile = new File(this.rootDir + "/all_tests");
         }
+
         failingTestFile = new File(this.getRootDir() + "/failing_tests");
-        if(!allTestFile.exists() || !failingTestFile.exists()) {
-            this.d4jCompile();
-            this.d4jTest();
-            assert allTestFile.exists();
-            assert failingTestFile.exists();
-        }
+
+        assert allTestFile.exists(): allTestFile.exists();
+        assert failingTestFile.exists(): failingTestFile.exists();
+
+        assert new File(srcJavaDir).exists(): srcJavaDir;
+        assert new File(binJavaDir).exists(): binJavaDir;
+        assert new File(binTestDir).exists(): binTestDir;
+
+        System.out.println("ProjectConfig setup finish...");
     }
 
     public String getBugName() {
@@ -144,12 +152,28 @@ public class ProjectConfig {
         this.id = id;
     }
 
+    public void gitClean() {
+        try {
+            List<String> params = new ArrayList<>();
+            params.add("git");
+            params.add("clean");
+            params.add("-fd");
+            CMD.run(params, this.rootFile);
+            System.out.println("git clean -fd " + this.rootDir);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        } catch (InterruptedException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
     public void d4jCompile(){
         try {
             List<String> params = new ArrayList<>();
             params.add("defects4j");
             params.add("compile");
             CMD.run(params, this.rootFile);
+            System.out.println("defect4j compile");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -163,6 +187,7 @@ public class ProjectConfig {
             params.add("defects4j");
             params.add("test");
             CMD.run(params, this.rootFile);
+            System.out.println("defect4j test");
         } catch (IOException e) {
             throw new RuntimeException(e);
         } catch (InterruptedException e) {
@@ -283,21 +308,7 @@ public class ProjectConfig {
         File srcFile = new File(srcJavaDir);
         File binFile = new File(binJavaDir);
         File testBinFile = new File(binTestDir);
-        if(!binFile.exists() || !testBinFile.exists()) {
-            try {
-                List<String> params = new ArrayList<>();
-                params.add("defects4j");
-                params.add("compile");
-                CMD.run(params, rootFile);
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
-        assert srcFile.exists();
-        assert binFile.exists();
-        assert testBinFile.exists();
+
         return new ProjectConfig(bugID, rootFile.getAbsolutePath(), srcFile.getAbsolutePath(), binFile.getAbsolutePath(), testBinFile.getAbsolutePath());
     }
 }
