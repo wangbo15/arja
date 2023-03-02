@@ -211,8 +211,12 @@ public class ProjectConfig {
     public static ProjectConfig getInstance(String bugID) {
 
         String d4jRoot = System.getenv("D4JSrcRoot");
-        assert d4jRoot != null: "The evn variable D4JSrcRoot is null!";
-        assert new File(d4jRoot).exists(): d4jRoot;
+        if (d4jRoot == null) {
+            throw new Error("The evn variable `D4JSrcRoot` is null!");
+        }
+        if (!(new File(d4jRoot).exists())) {
+            throw new Error("The file of `D4JSrcRoot` does not exist: " + d4jRoot);
+        }
 
         bugID = bugID.toLowerCase();
         String[] arr = bugID.split("_");
