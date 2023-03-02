@@ -20,3 +20,6 @@ buildNumber.properties
 .idea/
 Arja.iml
 tmp/
+
+META-INF/
+out/

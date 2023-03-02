@@ -265,17 +265,17 @@ public abstract class AbstractRepairProblem extends Problem {
 
 	void checkParameters() throws Exception {
 		if (binJavaDir == null)
-			throw new Exception("The build directory of Java classes is not specified!");
+			throw new Exception("The build directory of Java classes is not specified: " + binJavaDir);
 		else if (binTestDir == null)
-			throw new Exception("The build directory of test classes is not specified!");
+			throw new Exception("The build directory of test classes is not specified: " + binTestDir);
 		else if (srcJavaDir == null)
-			throw new Exception("The directory of Java source code is not specified!");
+			throw new Exception("The directory of Java source code is not specified: " + srcJavaDir);
 		else if (dependences == null)
-			throw new Exception("The dependences of the buggy program is not specified!");
+			throw new Exception("The dependences of the buggy program is not specified: " + dependences);
 		else if (!(new File(jvmPath).exists()))
-			throw new Exception("The JVM path does not exist!");
+			throw new Exception("The JVM path does not exist: " + jvmPath);
 		else if (!(new File(externalProjRoot).exists()))
-			throw new Exception("The directory of external project does not exist!");
+			throw new Exception("The directory of external project does not exist: " + externalProjRoot);
 	}
 
 	void invokeModules() throws Exception {
