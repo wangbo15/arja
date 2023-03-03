@@ -8,7 +8,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Locale;
+import java.util.regex.Pattern;
 
 public class ProjectConfig {
 
@@ -307,12 +307,26 @@ public class ProjectConfig {
                 throw new Error("ERROR PROJECT NAME: " + bugID);
             }
         }
-        assert srcJavaDir != null && new File(srcJavaDir).exists();
+        if(srcJavaDir == null) {
+            throw new Error("srcJavaDir is null!!!");
+        }
 
         File srcFile = new File(srcJavaDir);
         File binFile = new File(binJavaDir);
         File testBinFile = new File(binTestDir);
 
+        if (!srcFile.exists()) {
+            throw new Error("Error srcFile: " + srcFile);
+        }
+
         return new ProjectConfig(bugID, rootFile.getAbsolutePath(), srcFile.getAbsolutePath(), binFile.getAbsolutePath(), testBinFile.getAbsolutePath());
+    }
+
+    public static boolean isLegalBugID(String bugID) {
+        if (bugID == null) {
+            return false;
+        }
+        Pattern pattern = Pattern.compile("[a-zA-Z]*_[0-9]]*");
+        return pattern.matcher(bugID).matches();
     }
 }

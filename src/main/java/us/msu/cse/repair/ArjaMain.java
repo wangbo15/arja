@@ -1,5 +1,6 @@
 package us.msu.cse.repair;
 
+import com.sun.deploy.util.ArrayUtil;
 import jmetal.operators.crossover.Crossover;
 import jmetal.operators.mutation.Mutation;
 import jmetal.operators.selection.Selection;
@@ -12,30 +13,37 @@ import us.msu.cse.repair.ec.operators.crossover.ExtendedCrossoverFactory;
 import us.msu.cse.repair.ec.operators.mutation.ExtendedMutationFactory;
 import us.msu.cse.repair.ec.problems.ArjaProblem;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class ArjaMain {
+
 	public static void main(String args[]) throws Exception {
 		String bugID = args[0];
 		assert bugID != null;
 		System.out.println("Fixing " + bugID + " @ " + Main.EXECUTE_TIME_STR);
 		ProjectConfig config = ProjectConfig.getInstance(bugID);
-		args = new String[11];
-		args[0] = "Arja";
-		args[1] = "-DsrcJavaDir";
-		args[2] = config.getSrcJavaDir();
-		args[3] = "-DbinJavaDir";
-		args[4] = config.getBinJavaDir();
-		args[5] = "-DbinTestDir";
-		args[6] = config.getBinTestDir();
-		args[7] = "-Ddependences";
-		args[8] = config.getDependencies();
 
-		args[9] = "-DpatchOutputRoot";
-		args[10] = "patches_" + bugID + "_" + Main.EXECUTE_TIME_STR;
+		List<String> argsList = new ArrayList<>();
+		argsList.add("Arja");
+		argsList.add("-DbugID");
+		argsList.add(bugID);
+		argsList.add("-DsrcJavaDir");
+		argsList.add(config.getSrcJavaDir());
+		argsList.add("-DbinJavaDir");
+		argsList.add(config.getBinJavaDir());
+		argsList.add("-DbinTestDir");
+		argsList.add(config.getBinTestDir());
+		argsList.add("-Ddependences");
+		argsList.add(config.getDependencies());
+		argsList.add("-DpatchOutputRoot");
+		argsList.add("patches_" + bugID + "_" + Main.EXECUTE_TIME_STR);
 
-//		args[11] = "-Dthr";
-//		args[12] = "0.08";
+		repair(argsList.toArray(new String[argsList.size()]), config);
+	}
+
+	public static void repair(String args[], ProjectConfig config) throws Exception {
 
 		HashMap<String, String> parameterStrs = Interpreter.getParameterStrings(args);
 		HashMap<String, Object> parameters = Interpreter.getBasicParameterSetting(parameterStrs);
