@@ -217,7 +217,11 @@ public class ProjectConfig {
 
     public String getDependencies(){
         if(!subject.equalsIgnoreCase("closure")) {
-            return "/home/bjtucs/program_files/defects4j/framework/projects/lib/junit-4.11.jar";
+            String junit = DEFECTS4J_HOME + "/framework/projects/lib/junit-4.11.jar";
+            if (new File(junit).exists() == false) {
+                throw new Error("No junit.jar file: " + junit);
+            }
+            return junit;
         }
         File libFile = new File(this.rootDir + "/lib");
         FilenameFilter filter = new FilenameFilter() {
