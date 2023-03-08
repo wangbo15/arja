@@ -270,7 +270,11 @@ public class ProjectConfig {
                 assert id >=1 && id <= 65;
                 srcJavaDir = rootPath + "/src/main/java/";
                 binJavaDir = rootPath + "/target/classes/";
-                binTestDir = rootPath + "/target/tests/";
+                if (id <= 20) {
+                    binTestDir = rootPath + "/target/tests/";
+                } else {
+                    binTestDir = rootPath + "/target/test-classes/";
+                }
                 break;
             }
             case "math": {
