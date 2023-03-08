@@ -268,9 +268,13 @@ public class ProjectConfig {
             }
             case "lang": {
                 assert id >=1 && id <= 65;
-                srcJavaDir = rootPath + "/src/main/java/";
+                if (id <= 35) {
+                    srcJavaDir = rootPath + "/src/main/java/";
+                } else {
+                    srcJavaDir = rootPath + "/src/java/";
+                }
                 binJavaDir = rootPath + "/target/classes/";
-                if (id <= 20) {
+                if (id <= 20 || id >= 42) {
                     binTestDir = rootPath + "/target/tests/";
                 } else {
                     binTestDir = rootPath + "/target/test-classes/";
