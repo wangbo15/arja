@@ -326,7 +326,7 @@ public class ProjectConfig {
         if (bugID == null) {
             return false;
         }
-        Pattern pattern = Pattern.compile("[a-zA-Z]*_[0-9]]*");
+        Pattern pattern = Pattern.compile("[a-zA-Z0-9]+_[0-9]+");
         return pattern.matcher(bugID).matches();
     }
 }
