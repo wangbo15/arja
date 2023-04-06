@@ -1,6 +1,5 @@
 package us.msu.cse.repair;
 
-import com.sun.deploy.util.ArrayUtil;
 import jmetal.operators.crossover.Crossover;
 import jmetal.operators.mutation.Mutation;
 import jmetal.operators.selection.Selection;
@@ -20,6 +19,8 @@ import java.util.List;
 public class ArjaMain {
 
 	public static void main(String args[]) throws Exception {
+		long start = System.currentTimeMillis();
+
 		String bugID = args[0];
 		assert bugID != null;
 		System.out.println("Fixing " + bugID + " @ " + Main.EXECUTE_TIME_STR);
@@ -41,6 +42,11 @@ public class ArjaMain {
 		argsList.add("patches_" + bugID + "_" + Main.EXECUTE_TIME_STR);
 
 		repair(argsList.toArray(new String[argsList.size()]), config);
+
+		long end = System.currentTimeMillis();
+		System.out.println("TIME: " + (end - start));
+		System.out.println("TOTAL_COMPILATION_TIME: " + ArjaProblem.TOTAL_COMPILATION_TIME);
+		System.out.println("COMPILATION_FAIL_TIME: " + ArjaProblem.COMPILATION_FAIL_TIME);
 	}
 
 	public static void repair(String args[], ProjectConfig config) throws Exception {
@@ -61,8 +67,8 @@ public class ArjaMain {
 			parameters.put("ingredientScreenerName", ingredientScreenerNameS);
 		}
 
-		int populationSize = 80;
-		int maxGenerations = 100;
+		int populationSize = 40;
+		int maxGenerations = 50;
 		
 		String populationSizeS = parameterStrs.get("populationSize");
 		if (populationSizeS != null)

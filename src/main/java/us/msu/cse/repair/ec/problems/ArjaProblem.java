@@ -40,6 +40,9 @@ public class ArjaProblem extends AbstractRepairProblem {
 
 	Boolean miFilterRule;
 
+	public static long TOTAL_COMPILATION_TIME = 0;
+	public static long COMPILATION_FAIL_TIME = 0;
+
 	public ArjaProblem(Map<String, Object> parameters) throws Exception {
 		super(parameters);
 
@@ -167,6 +170,7 @@ public class ArjaProblem extends AbstractRepairProblem {
 
 		Map<String, String> modifiedJavaSources = getModifiedJavaSources(astRewriters);
 		Map<String, JavaFileObject> compiledClasses = getCompiledClassesForTestExecution(modifiedJavaSources);
+		TOTAL_COMPILATION_TIME++;
 
 		boolean status = false;
 		if (compiledClasses != null) {
@@ -179,6 +183,7 @@ public class ArjaProblem extends AbstractRepairProblem {
 			}
 		} else {
 			assignMaxObjectiveValues(solution);
+			COMPILATION_FAIL_TIME++;
 			System.out.println("Compilation fails!");
 		}
 
